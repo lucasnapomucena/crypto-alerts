@@ -1,9 +1,9 @@
 {
-  "name": "server",
+  "name": "crypto-alerts",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
+    "dev": "tsx watch index.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "type": "module",
@@ -14,5 +14,12 @@
   "dependencies": {
     "dotenv": "^16.5.0",
     "ws": "^8.18.1"
+  },
+  "devDependencies": {
+    "@types/dotenv": "^6.1.1",
+    "@types/node": "^22.15.3",
+    "@types/ws": "^8.18.1",
+    "tsx": "^4.19.4",
+    "typescript": "^5.8.3"
   }
 }

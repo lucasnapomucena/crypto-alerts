@@ -1,5 +1,4 @@
 import { Home, Inbox } from "lucide-react";
-import { ModeToggle } from "@/components/core/mode-toggle";
 
 import {
   Sidebar,
@@ -9,8 +8,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarFooter,
-  SidebarTrigger,
+  SidebarGroupLabel,
 } from "@/components/ui/sidebar";
 import { Link } from "react-router";
 
@@ -32,7 +30,7 @@ export const MainSidebar = () => {
     <Sidebar collapsible="icon">
       <SidebarContent>
         <SidebarGroup>
-          <SidebarTrigger className="cursor-pointer" />
+          <SidebarGroupLabel>Application</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {items.map((item) => (
@@ -49,9 +47,6 @@ export const MainSidebar = () => {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
-      <SidebarFooter>
-        <ModeToggle />
-      </SidebarFooter>
     </Sidebar>
   );
 };

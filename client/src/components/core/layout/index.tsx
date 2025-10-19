@@ -1,11 +1,10 @@
-import { SidebarProvider } from "@/components/ui/sidebar";
-import { MainSidebar } from "@/components/core/sidebar";
+import { Header } from "@/components/core/header";
 
 export const Layout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <SidebarProvider>
-      <MainSidebar />
+    <>
+      <Header />
       <main className="p-4">{children}</main>
-    </SidebarProvider>
+    </>
   );
 };

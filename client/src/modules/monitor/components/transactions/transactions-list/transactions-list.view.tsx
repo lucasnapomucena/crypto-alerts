@@ -6,17 +6,15 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Transaction } from "@/interfaces/transactions";
+import { useTransactionsStore } from "@/stores/use-transactions";
 import { TableVirtuoso } from "react-virtuoso";
 
-interface TransactionsListProps {
-  transactions: Transaction[];
-}
+export const TransactionsList = () => {
+  const transactions = useTransactionsStore((state) => state.transactions);
 
-export const TransactionsList = ({ transactions }: TransactionsListProps) => {
   return (
     <TableVirtuoso
-      style={{ height: "calc(100vh - 100px)" }}
+      style={{ height: "calc(100vh - 200px)" }}
       data={transactions}
       components={{
         Scroller: (props) => <div {...props} className="overflow-auto" />,
@@ -28,17 +26,13 @@ export const TransactionsList = ({ transactions }: TransactionsListProps) => {
       fixedHeaderContent={() => (
         <TableRow>
           <TableHead>Action</TableHead>
-          <TableHead>M</TableHead>
-          <TableHead>FSYM</TableHead>
-          <TableHead>TSYM</TableHead>
-          <TableHead>P</TableHead>
-          <TableHead>CCSEQ</TableHead>
-          <TableHead>TYPE</TableHead>
-          <TableHead>SIDE</TableHead>
-          <TableHead>Q</TableHead>
-          <TableHead>SEQ</TableHead>
-          <TableHead>REPORTEDNS</TableHead>
-          <TableHead>DELAYNS</TableHead>
+          <TableHead>Exchange</TableHead>
+          <TableHead>Fsym</TableHead>
+          <TableHead>Tsym</TableHead>
+          <TableHead>Quantity</TableHead>
+          <TableHead>Price</TableHead>
+          <TableHead>Type</TableHead>
+          <TableHead>Side</TableHead>
         </TableRow>
       )}
       itemContent={(_, transaction) => (
@@ -47,14 +41,10 @@ export const TransactionsList = ({ transactions }: TransactionsListProps) => {
           <TableCell>{transaction.M}</TableCell>
           <TableCell>{transaction.FSYM}</TableCell>
           <TableCell>{transaction.TSYM}</TableCell>
+          <TableCell>{transaction.Q}</TableCell>
           <TableCell>{transaction.P}</TableCell>
-          <TableCell>{transaction.CCSEQ}</TableCell>
           <TableCell>{transaction.TYPE}</TableCell>
           <TableCell>{transaction.SIDE}</TableCell>
-          <TableCell>{transaction.Q}</TableCell>
-          <TableCell>{transaction.SEQ}</TableCell>
-          <TableCell>{transaction.REPORTEDNS}</TableCell>
-          <TableCell>{transaction.DELAYNS}</TableCell>
         </>
       )}
     />
