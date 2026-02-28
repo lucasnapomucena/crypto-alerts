@@ -14,7 +14,7 @@ const PAIRS = [
 ];
 
 const STREAMS = PAIRS.map((p) => `${p}@trade`).join("/");
-const BINANCE_WS_URL = `wss://stream.binance.com:443/stream?streams=${STREAMS}`;
+const BINANCE_WS_URL = `wss://stream.binance.vision/stream?streams=${STREAMS}`;
 
 const server = http.createServer();
 const wss = new WebSocketServer({ server });
