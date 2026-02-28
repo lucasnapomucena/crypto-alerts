@@ -14,7 +14,7 @@ const PAIRS = [
 ];
 
 const STREAMS = PAIRS.map((p) => `${p}@trade`).join("/");
-const BINANCE_WS_URL = `wss://stream.binance.com:9443/stream?streams=${STREAMS}`;
+const BINANCE_WS_URL = `wss://stream.binance.com:443/stream?streams=${STREAMS}`;
 
 const server = http.createServer();
 const wss = new WebSocketServer({ server });
@@ -67,7 +67,9 @@ wss.on("connection", (client) => {
       }
     });
 
-    binanceWS.on("error", () => {});
+    binanceWS.on("error", (err) => {
+      console.error("❌ Binance WS error:", err.message);
+    });
 
     binanceWS.on("close", () => {
       binanceWS = null;
