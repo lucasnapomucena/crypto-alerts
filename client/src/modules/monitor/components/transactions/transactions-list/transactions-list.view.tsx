@@ -7,15 +7,27 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useTransactionsStore } from "@/stores/use-transactions";
+import {
+  formatAction,
+  formatPrice,
+  formatQuantity,
+  formatSide,
+} from "@/lib/transaction-formatters";
+import { cn } from "@/lib/utils";
 import { TableVirtuoso } from "react-virtuoso";
 
-export const TransactionsList = () => {
+interface TransactionsListProps {
+  symbol?: string;
+}
+
+export const TransactionsList = ({ symbol }: TransactionsListProps) => {
   const transactions = useTransactionsStore((state) => state.transactions);
+  const filtered = symbol ? transactions.filter((t) => t.FSYM === symbol) : transactions;
 
   return (
     <TableVirtuoso
       style={{ height: "calc(100vh - 200px)" }}
-      data={transactions}
+      data={filtered}
       components={{
         Scroller: (props) => <div {...props} className="overflow-auto" />,
         Table: (props) => <Table {...props} />,
@@ -27,24 +39,37 @@ export const TransactionsList = () => {
         <TableRow>
           <TableHead>Action</TableHead>
           <TableHead>Exchange</TableHead>
-          <TableHead>Fsym</TableHead>
-          <TableHead>Tsym</TableHead>
-          <TableHead>Quantity</TableHead>
-          <TableHead>Price</TableHead>
-          <TableHead>Type</TableHead>
+          <TableHead>Symbol</TableHead>
+          <TableHead>Quote</TableHead>
           <TableHead>Side</TableHead>
+          <TableHead className="text-right">Quantity</TableHead>
+          <TableHead className="text-right">Price</TableHead>
+          <TableHead>Type</TableHead>
         </TableRow>
       )}
       itemContent={(_, transaction) => (
         <>
-          <TableCell>{transaction.ACTION}</TableCell>
+          <TableCell>{formatAction(transaction.ACTION)}</TableCell>
           <TableCell>{transaction.M}</TableCell>
-          <TableCell>{transaction.FSYM}</TableCell>
+          <TableCell className="font-medium">{transaction.FSYM}</TableCell>
           <TableCell>{transaction.TSYM}</TableCell>
-          <TableCell>{transaction.Q}</TableCell>
-          <TableCell>{transaction.P}</TableCell>
+          <TableCell>
+            <span
+              className={cn(
+                "font-semibold",
+                transaction.SIDE === 1 ? "text-green-500" : "text-red-500"
+              )}
+            >
+              {formatSide(transaction.SIDE)}
+            </span>
+          </TableCell>
+          <TableCell className="text-right font-mono">
+            {formatQuantity(transaction.Q)}
+          </TableCell>
+          <TableCell className="text-right font-mono">
+            {formatPrice(transaction.P)}
+          </TableCell>
           <TableCell>{transaction.TYPE}</TableCell>
-          <TableCell>{transaction.SIDE}</TableCell>
         </>
       )}
     />
