@@ -2,19 +2,18 @@ import http from "node:http";
 import { WebSocketServer, WebSocket } from "ws";
 import { throttle } from "./utils/throttle";
 
-const PAIRS = [
-  "btcusdt",
-  "ethusdt",
-  "bnbusdt",
-  "solusdt",
-  "xrpusdt",
-  "adausdt",
-  "dogeusdt",
-  "avaxusdt",
-];
+const BYBIT_WS_URL = "wss://stream.bybit.com/v5/public/spot";
 
-const STREAMS = PAIRS.map((p) => `${p}@trade`).join("/");
-const BINANCE_WS_URL = `wss://stream.binance.vision/stream?streams=${STREAMS}`;
+const PAIRS = [
+  "BTCUSDT",
+  "ETHUSDT",
+  "BNBUSDT",
+  "SOLUSDT",
+  "XRPUSDT",
+  "ADAUSDT",
+  "DOGEUSDT",
+  "AVAXUSDT",
+];
 
 const server = http.createServer();
 const wss = new WebSocketServer({ server });
@@ -28,56 +27,63 @@ wss.on("connection", (client) => {
     throttleMap.get(symbol)!(data);
   };
 
-  let binanceWS: WebSocket | null = null;
+  let bybitWS: WebSocket | null = null;
   let reconnectTimeout: ReturnType<typeof setTimeout> | null = null;
   let reconnectAttempts = 0;
 
   function connect() {
-    binanceWS = new WebSocket(BINANCE_WS_URL);
+    bybitWS = new WebSocket(BYBIT_WS_URL);
 
-    binanceWS.on("open", () => {
+    bybitWS.on("open", () => {
       reconnectAttempts = 0;
-      console.log("✅ Binance connected");
+      console.log("✅ Bybit connected");
+      bybitWS!.send(
+        JSON.stringify({
+          op: "subscribe",
+          args: PAIRS.map((p) => `publicTrade.${p}`),
+        })
+      );
     });
 
-    binanceWS.on("message", (data) => {
+    bybitWS.on("message", (data) => {
       try {
-        const { data: trade } = JSON.parse(data.toString());
-        if (trade?.e !== "trade") return;
+        const msg = JSON.parse(data.toString());
+        if (!msg.topic?.startsWith("publicTrade.") || !Array.isArray(msg.data)) return;
 
-        const fsym = trade.s.replace("USDT", "");
-        const transaction = {
-          TYPE: "trade",
-          M: "Binance",
-          FSYM: fsym,
-          TSYM: "USDT",
-          SIDE: trade.m ? 2 : 1,
-          ACTION: 1,
-          CCSEQ: trade.t,
-          P: parseFloat(trade.p),
-          Q: parseFloat(trade.q),
-          SEQ: trade.t,
-          REPORTEDNS: trade.T * 1_000_000,
-          DELAYNS: 0,
-        };
-
-        sendThrottled(fsym, JSON.stringify(transaction));
+        for (const trade of msg.data) {
+          const fsym = (trade.s as string).replace("USDT", "");
+          const transaction = {
+            TYPE: "trade",
+            M: "Bybit",
+            FSYM: fsym,
+            TSYM: "USDT",
+            SIDE: trade.S === "Buy" ? 1 : 2,
+            ACTION: 1,
+            CCSEQ: trade.T,
+            P: parseFloat(trade.p),
+            Q: parseFloat(trade.v),
+            SEQ: trade.T,
+            REPORTEDNS: trade.T * 1_000_000,
+            DELAYNS: 0,
+          };
+          sendThrottled(fsym, JSON.stringify(transaction));
+        }
       } catch {
         // ignore malformed messages
       }
     });
 
-    binanceWS.on("error", (err) => {
-      console.error("❌ Binance WS error:", err.message);
+    bybitWS.on("error", (err) => {
+      console.error("❌ Bybit WS error:", err.message);
     });
 
-    binanceWS.on("close", () => {
-      binanceWS = null;
+    bybitWS.on("close", () => {
+      bybitWS = null;
       if (client.readyState !== WebSocket.OPEN) return;
 
       const delay = Math.min(1000 * 2 ** reconnectAttempts, 30000);
       reconnectAttempts++;
-      console.log(`⚠️  Binance disconnected. Reconnecting in ${delay / 1000}s...`);
+      console.log(`⚠️  Bybit disconnected. Reconnecting in ${delay / 1000}s...`);
       reconnectTimeout = setTimeout(connect, delay);
     });
   }
@@ -86,7 +92,7 @@ wss.on("connection", (client) => {
 
   client.on("close", () => {
     if (reconnectTimeout) clearTimeout(reconnectTimeout);
-    binanceWS?.terminate();
+    bybitWS?.terminate();
   });
 });
 
