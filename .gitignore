@@ -1,0 +1,7 @@
+# iCloud Drive duplicates and placeholders
+*.icloud
+* 2.*
+* 2/
+
+# Vite cache
+client/.vite/
