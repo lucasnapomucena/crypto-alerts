@@ -13,28 +13,16 @@ const MonitorPage = React.lazy(() => import("@/modules/monitor/pages/index"));
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-      <Suspense fallback={<>Loading...</>}>
-        <BrowserRouter>
-          <Routes>
-            <Route
-              path="/"
-              element={
-                <WebSocketProvider>
-                  <MonitorPage />
-                </WebSocketProvider>
-              }
-            ></Route>
-            <Route
-              path="/alerts"
-              element={
-                <WebSocketProvider>
-                  <AlertsPage />
-                </WebSocketProvider>
-              }
-            ></Route>
-          </Routes>
-        </BrowserRouter>
-      </Suspense>
+      <BrowserRouter>
+        <WebSocketProvider>
+          <Suspense fallback={<>Loading...</>}>
+            <Routes>
+              <Route path="/" element={<MonitorPage />} />
+              <Route path="/alerts" element={<AlertsPage />} />
+            </Routes>
+          </Suspense>
+        </WebSocketProvider>
+      </BrowserRouter>
       <Toaster />
     </ThemeProvider>
   </StrictMode>

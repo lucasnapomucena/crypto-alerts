@@ -1,5 +1,6 @@
 type MessageType =
   | "CONNECT"
+  | "CONNECTED"
   | "DISCONNECTED"
   | "PAUSE"
   | "RESUME"
@@ -17,6 +18,9 @@ class WebSocketClient<T> {
   private maxItems: number;
   private messages: T[] = [];
   private isStopped = false;
+  private reconnectAttempts = 0;
+  private reconnectTimeout: ReturnType<typeof setTimeout> | null = null;
+  private intentionalDisconnect = false;
 
   constructor(config: WebSocketWorkerConfig) {
     this.wsUrl = config.wsUrl;
@@ -38,10 +42,12 @@ class WebSocketClient<T> {
         if (config) {
           this.wsUrl = config.wsUrl;
           this.maxItems = config.maxItems ?? 500;
+          this.intentionalDisconnect = false;
           this.connect();
         }
         break;
       case "DISCONNECTED":
+        this.intentionalDisconnect = true;
         this.disconnect();
         break;
       case "PAUSE":
@@ -71,17 +77,45 @@ class WebSocketClient<T> {
 
   private connect() {
     if (this.ws) return;
+    if (this.reconnectTimeout) {
+      clearTimeout(this.reconnectTimeout);
+      this.reconnectTimeout = null;
+    }
 
     this.ws = new WebSocket(this.wsUrl);
+    this.ws.onopen = () => {
+      this.reconnectAttempts = 0;
+      this.postMessage("CONNECTED");
+    };
+
     this.ws.onmessage = this.handleWsMessage.bind(this);
-    this.ws.onclose = () => this.postMessage("DISCONNECTED");
+    this.ws.onclose = () => {
+      this.ws = null;
+      this.postMessage("DISCONNECTED");
+      if (!this.intentionalDisconnect) {
+        this.scheduleReconnect();
+      }
+    };
+    
     this.ws.onerror = () =>
       this.postMessage("ERROR", new Error("WebSocket error"));
   }
 
-  private disconnect(): void {
-    if (!this.ws) return;
+  private scheduleReconnect() {
+    if (this.reconnectAttempts >= 10) return;
+    const delay = Math.min(1000 * 2 ** this.reconnectAttempts, 30000);
+    this.reconnectAttempts++;
+    this.reconnectTimeout = setTimeout(() => {
+      this.connect();
+    }, delay);
+  }
 
+  private disconnect(): void {
+    if (this.reconnectTimeout) {
+      clearTimeout(this.reconnectTimeout);
+      this.reconnectTimeout = null;
+    }
+    if (!this.ws) return;
     this.ws.close();
     this.ws = null;
   }

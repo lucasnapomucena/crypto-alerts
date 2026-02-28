@@ -15,6 +15,3 @@ export const useTransactionsStore = create<TransactionsState>((set) => ({
   },
 }));
 
-useTransactionsStore.subscribe((state) => {
-  console.log(state, "state");
-});

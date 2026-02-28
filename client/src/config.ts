@@ -1,3 +1,3 @@
 export default {
-  webSocketUrl: "ws://localhost:4000",
+  webSocketUrl: import.meta.env.VITE_WS_URL ?? "ws://localhost:4000",
 };
