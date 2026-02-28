@@ -45,8 +45,8 @@ describe("AlertsPage – stats", () => {
   it("counts all rules correctly", () => {
     useAlertsStore.setState({
       rules: [
-        { id: "1", label: "R1", condition: "price_above", threshold: 100, active: true, createdAt: 1 },
-        { id: "2", label: "R2", condition: "price_below", threshold: 50, active: false, createdAt: 2 },
+        { id: "1", label: "R1", symbol: "BTC", condition: "price_above", threshold: 100, active: true, createdAt: 1 },
+        { id: "2", label: "R2", symbol: "ETH", condition: "price_below", threshold: 50, active: false, createdAt: 2 },
       ],
       triggered: [],
     });
@@ -60,9 +60,9 @@ describe("AlertsPage – stats", () => {
   it("counts only active rules for the active-rules stat", () => {
     useAlertsStore.setState({
       rules: [
-        { id: "1", label: "R1", condition: "price_above", threshold: 100, active: true, createdAt: 1 },
-        { id: "2", label: "R2", condition: "price_below", threshold: 50, active: false, createdAt: 2 },
-        { id: "3", label: "R3", condition: "quantity_above", threshold: 10, active: true, createdAt: 3 },
+        { id: "1", label: "R1", symbol: "BTC", condition: "price_above", threshold: 100, active: true, createdAt: 1 },
+        { id: "2", label: "R2", symbol: "ETH", condition: "price_below", threshold: 50, active: false, createdAt: 2 },
+        { id: "3", label: "R3", symbol: "SOL", condition: "quantity_above", threshold: 10, active: true, createdAt: 3 },
       ],
       triggered: [],
     });
@@ -85,7 +85,7 @@ describe("AlertsPage – rules list", () => {
   it("renders each rule's label and condition", () => {
     useAlertsStore.setState({
       rules: [
-        { id: "1", label: "BTC spike", condition: "price_above", threshold: 95000, active: true, createdAt: 1 },
+        { id: "1", label: "BTC spike", symbol: "BTC", condition: "price_above", threshold: 95000, active: true, createdAt: 1 },
       ],
       triggered: [],
     });
@@ -99,7 +99,7 @@ describe("AlertsPage – rules list", () => {
   it("calls removeRule when Remove is clicked", () => {
     useAlertsStore.setState({
       rules: [
-        { id: "rule-1", label: "To remove", condition: "price_above", threshold: 100, active: true, createdAt: 1 },
+        { id: "rule-1", label: "To remove", symbol: "BTC", condition: "price_above", threshold: 100, active: true, createdAt: 1 },
       ],
       triggered: [],
     });
@@ -112,7 +112,7 @@ describe("AlertsPage – rules list", () => {
   it("calls toggleRule when the status indicator is clicked", () => {
     useAlertsStore.setState({
       rules: [
-        { id: "rule-1", label: "Toggle me", condition: "price_above", threshold: 100, active: true, createdAt: 1 },
+        { id: "rule-1", label: "Toggle me", symbol: "BTC", condition: "price_above", threshold: 100, active: true, createdAt: 1 },
       ],
       triggered: [],
     });
