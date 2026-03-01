@@ -16,15 +16,15 @@ export default function MonitorPage() {
 
   return (
     <Layout>
-      <section className="w-full flex items-center justify-between mb-6">
-        <h1 className="text-2xl">Monitor transactions</h1>
-        <div className="flex gap-2">
+      <section className="w-full flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
+        <h1 className="text-2xl shrink-0">Monitor transactions</h1>
+        <div className="flex gap-2 overflow-x-auto pb-1 -mb-1">
           {SUPPORTED_COINS.map((coin) => (
             <button
               key={coin.symbol}
               onClick={() => setSelectedSymbol(coin.symbol)}
               className={cn(
-                "rounded-md border px-3 py-1.5 text-sm transition-colors",
+                "shrink-0 rounded-md border px-3 py-1.5 text-sm transition-colors",
                 selectedSymbol === coin.symbol
                   ? "border-primary bg-primary text-primary-foreground"
                   : "border-border hover:bg-muted"

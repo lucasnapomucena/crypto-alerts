@@ -21,11 +21,11 @@ export const Header = () => {
   return (
     <header className="w-full border-b bg-background/95 backdrop-blur px-4">
       <div className="flex h-14 items-center">
-        <div className="mr-4 flex">
+        <div className="mr-4 flex items-center">
           <Link to="/" className="mr-6 flex items-center space-x-2">
             <span className="font-bold">Crypto Alerts</span>
           </Link>
-          <nav className="flex items-center space-x-6 text-sm font-medium">
+          <nav className="hidden md:flex items-center space-x-6 text-sm font-medium">
             <Link to="/" className="transition-colors hover:text-foreground/80">
               Monitor
             </Link>
@@ -37,10 +37,10 @@ export const Header = () => {
             </Link>
           </nav>
         </div>
-        <div className="flex flex-1 items-center justify-end space-x-3">
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <span className={cn("h-2 w-2 rounded-full animate-pulse", color)} />
-            {label}
+        <div className="flex flex-1 items-center justify-end space-x-2 md:space-x-3">
+          <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
+            <span className={cn("h-2 w-2 shrink-0 rounded-full animate-pulse", color)} />
+            <span className="hidden sm:inline">{label}</span>
           </div>
 
           <Button

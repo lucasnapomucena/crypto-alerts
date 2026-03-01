@@ -14,36 +14,36 @@ export default function AlertsPage() {
 
   return (
     <Layout>
-      <section className="w-full flex items-center justify-between mb-6">
+      <section className="w-full flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
         <h1 className="text-2xl">Alerts</h1>
         <AlertForm />
       </section>
 
       {/* Stats */}
-      <div className="grid grid-cols-3 gap-4 mb-6">
+      <div className="grid grid-cols-3 gap-2 sm:gap-4 mb-6">
         <Card>
-          <CardContent className="text-center flex flex-col gap-2 py-4">
-            <p className="text-4xl font-bold">{rules.length}</p>
-            <p className="text-sm text-muted-foreground">Rules configured</p>
+          <CardContent className="text-center flex flex-col gap-1 sm:gap-2 px-2 py-3 sm:py-4">
+            <p className="text-2xl sm:text-4xl font-bold">{rules.length}</p>
+            <p className="text-xs sm:text-sm text-muted-foreground">Rules configured</p>
           </CardContent>
         </Card>
         <Card>
-          <CardContent className="text-center flex flex-col gap-2 py-4">
-            <p className="text-4xl font-bold text-green-500">{activeCount}</p>
-            <p className="text-sm text-muted-foreground">Active rules</p>
+          <CardContent className="text-center flex flex-col gap-1 sm:gap-2 px-2 py-3 sm:py-4">
+            <p className="text-2xl sm:text-4xl font-bold text-green-500">{activeCount}</p>
+            <p className="text-xs sm:text-sm text-muted-foreground">Active rules</p>
           </CardContent>
         </Card>
         <Card>
-          <CardContent className="text-center flex flex-col gap-2 py-4">
-            <p className="text-4xl font-bold text-yellow-500">
+          <CardContent className="text-center flex flex-col gap-1 sm:gap-2 px-2 py-3 sm:py-4">
+            <p className="text-2xl sm:text-4xl font-bold text-yellow-500">
               {triggered.length}
             </p>
-            <p className="text-sm text-muted-foreground">Alerts triggered</p>
+            <p className="text-xs sm:text-sm text-muted-foreground">Alerts triggered</p>
           </CardContent>
         </Card>
       </div>
 
-      <div className="grid grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
         {/* Alert Rules */}
         <Card>
           <CardHeader>

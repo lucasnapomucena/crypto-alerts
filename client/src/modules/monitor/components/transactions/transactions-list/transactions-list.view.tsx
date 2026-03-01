@@ -30,7 +30,7 @@ export const TransactionsList = ({ symbol, side }: TransactionsListProps) => {
 
   return (
     <TableVirtuoso
-      style={{ height: "calc(100vh - 200px)" }}
+      style={{ height: "calc(100svh - 260px)" }}
       data={filtered}
       components={{
         Scroller: (props) => <div {...props} className="overflow-auto" />,
@@ -41,22 +41,22 @@ export const TransactionsList = ({ symbol, side }: TransactionsListProps) => {
       }}
       fixedHeaderContent={() => (
         <TableRow>
-          <TableHead>Action</TableHead>
-          <TableHead>Exchange</TableHead>
+          <TableHead className="hidden sm:table-cell">Action</TableHead>
+          <TableHead className="hidden md:table-cell">Exchange</TableHead>
           <TableHead>Symbol</TableHead>
-          <TableHead>Quote</TableHead>
+          <TableHead className="hidden sm:table-cell">Quote</TableHead>
           <TableHead>Side</TableHead>
           <TableHead className="text-right">Quantity</TableHead>
           <TableHead className="text-right">Price</TableHead>
-          <TableHead>Type</TableHead>
+          <TableHead className="hidden lg:table-cell">Type</TableHead>
         </TableRow>
       )}
       itemContent={(_, transaction) => (
         <>
-          <TableCell>{formatAction(transaction.ACTION)}</TableCell>
-          <TableCell>{transaction.M}</TableCell>
+          <TableCell className="hidden sm:table-cell">{formatAction(transaction.ACTION)}</TableCell>
+          <TableCell className="hidden md:table-cell">{transaction.M}</TableCell>
           <TableCell className="font-medium">{transaction.FSYM}</TableCell>
-          <TableCell>{transaction.TSYM}</TableCell>
+          <TableCell className="hidden sm:table-cell">{transaction.TSYM}</TableCell>
           <TableCell>
             <span
               className={cn(
@@ -73,7 +73,7 @@ export const TransactionsList = ({ symbol, side }: TransactionsListProps) => {
           <TableCell className="text-right font-mono">
             {formatPrice(transaction.P)}
           </TableCell>
-          <TableCell>{transaction.TYPE}</TableCell>
+          <TableCell className="hidden lg:table-cell">{transaction.TYPE}</TableCell>
         </>
       )}
     />
