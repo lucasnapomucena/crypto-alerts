@@ -31,6 +31,7 @@ describe("addRule", () => {
       symbol: "BTC",
       condition: "price_above",
       threshold: 95000,
+      side: "all",
       active: true,
     });
 
@@ -47,8 +48,8 @@ describe("addRule", () => {
 
   it("adds multiple rules independently", () => {
     const { addRule } = useAlertsStore.getState();
-    addRule({ label: "Rule A", symbol: "BTC", condition: "price_above", threshold: 100, active: true });
-    addRule({ label: "Rule B", symbol: "ETH", condition: "price_below", threshold: 50, active: false });
+    addRule({ label: "Rule A", symbol: "BTC", condition: "price_above", threshold: 100, side: "all", active: true });
+    addRule({ label: "Rule B", symbol: "ETH", condition: "price_below", threshold: 50, side: "all", active: false });
 
     const { rules } = useAlertsStore.getState();
     expect(rules).toHaveLength(2);
@@ -58,8 +59,8 @@ describe("addRule", () => {
 
   it("generates unique ids for each rule", () => {
     const { addRule } = useAlertsStore.getState();
-    addRule({ label: "Rule 1", symbol: "BTC", condition: "price_above", threshold: 100, active: true });
-    addRule({ label: "Rule 2", symbol: "BTC", condition: "price_above", threshold: 200, active: true });
+    addRule({ label: "Rule 1", symbol: "BTC", condition: "price_above", threshold: 100, side: "all", active: true });
+    addRule({ label: "Rule 2", symbol: "BTC", condition: "price_above", threshold: 200, side: "all", active: true });
 
     const { rules } = useAlertsStore.getState();
     expect(rules[0].id).not.toBe(rules[1].id);
@@ -75,6 +76,7 @@ describe("removeRule", () => {
       symbol: "BTC",
       condition: "price_above",
       threshold: 100,
+      side: "all",
       active: true,
     });
 
@@ -86,8 +88,8 @@ describe("removeRule", () => {
 
   it("does not remove other rules", () => {
     const { addRule } = useAlertsStore.getState();
-    addRule({ label: "Keep", symbol: "BTC", condition: "price_above", threshold: 100, active: true });
-    addRule({ label: "Remove me", symbol: "BTC", condition: "price_below", threshold: 50, active: true });
+    addRule({ label: "Keep", symbol: "BTC", condition: "price_above", threshold: 100, side: "all", active: true });
+    addRule({ label: "Remove me", symbol: "BTC", condition: "price_below", threshold: 50, side: "all", active: true });
 
     const idToRemove = useAlertsStore.getState().rules[1].id;
     useAlertsStore.getState().removeRule(idToRemove);
@@ -103,6 +105,7 @@ describe("removeRule", () => {
       symbol: "BTC",
       condition: "price_above",
       threshold: 100,
+      side: "all",
       active: true,
     });
 
@@ -120,6 +123,7 @@ describe("toggleRule", () => {
       symbol: "BTC",
       condition: "price_above",
       threshold: 100,
+      side: "all",
       active: true,
     });
 
@@ -135,6 +139,7 @@ describe("toggleRule", () => {
       symbol: "BTC",
       condition: "price_above",
       threshold: 100,
+      side: "all",
       active: false,
     });
 
@@ -146,8 +151,8 @@ describe("toggleRule", () => {
 
   it("only toggles the targeted rule", () => {
     const { addRule } = useAlertsStore.getState();
-    addRule({ label: "Rule 1", symbol: "BTC", condition: "price_above", threshold: 100, active: true });
-    addRule({ label: "Rule 2", symbol: "ETH", condition: "price_below", threshold: 50, active: true });
+    addRule({ label: "Rule 1", symbol: "BTC", condition: "price_above", threshold: 100, side: "all", active: true });
+    addRule({ label: "Rule 2", symbol: "ETH", condition: "price_below", threshold: 50, side: "all", active: true });
 
     const idOfFirst = useAlertsStore.getState().rules[0].id;
     useAlertsStore.getState().toggleRule(idOfFirst);
@@ -205,7 +210,7 @@ describe("addTriggered", () => {
   });
 });
 
-// ─── clearTriggered ─────────────────────────────────────────────────────────
+// ─── clearTriggered ────────────────��────────────────────────────────────────
 
 describe("clearTriggered", () => {
   it("removes all triggered alerts", () => {
