@@ -67,6 +67,16 @@ export default function AlertsPage() {
                       {rule.condition.startsWith("price")
                         ? formatPrice(rule.threshold)
                         : formatQuantity(rule.threshold)}
+                      {rule.side && rule.side !== "all" && (
+                        <span
+                          className={cn(
+                            "ml-1 font-medium",
+                            rule.side === "buy" ? "text-green-500" : "text-red-500"
+                          )}
+                        >
+                          · {rule.side === "buy" ? "Buy" : "Sell"}
+                        </span>
+                      )}
                     </span>
                   </div>
                   <div className="flex items-center gap-2">

@@ -45,7 +45,12 @@ interface WebSocketProviderProps {
 
 function evaluateAlerts(transaction: Transaction) {
   const { rules, addTriggered } = useAlertsStore.getState();
-  const activeRules = rules.filter((r) => r.active && r.symbol === transaction.FSYM);
+  const activeRules = rules.filter((r) => {
+    if (!r.active || r.symbol !== transaction.FSYM) return false;
+    if (r.side === "buy" && transaction.SIDE !== 1) return false;
+    if (r.side === "sell" && transaction.SIDE !== 2) return false;
+    return true;
+  });
 
   for (const rule of activeRules) {
     const value =

@@ -8,12 +8,15 @@ export type AlertCondition =
   | "quantity_above"
   | "quantity_below";
 
+export type AlertSide = "all" | "buy" | "sell";
+
 export interface AlertRule {
   id: string;
   label: string;
   symbol: string;
   condition: AlertCondition;
   threshold: number;
+  side: AlertSide;
   active: boolean;
   createdAt: number;
 }

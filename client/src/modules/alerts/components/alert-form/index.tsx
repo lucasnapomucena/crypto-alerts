@@ -8,7 +8,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { useAlertsStore, type AlertCondition } from "@/stores/use-alerts";
+import { useAlertsStore, type AlertCondition, type AlertSide } from "@/stores/use-alerts";
 import { SUPPORTED_COINS } from "@/lib/coins";
 import { cn } from "@/lib/utils";
 
@@ -19,23 +19,31 @@ const CONDITIONS: { value: AlertCondition; label: string }[] = [
   { value: "quantity_below", label: "Quantity below" },
 ];
 
+const SIDES: { value: AlertSide; label: string }[] = [
+  { value: "all", label: "Both" },
+  { value: "buy", label: "Buy" },
+  { value: "sell", label: "Sell" },
+];
+
 export const AlertForm = () => {
   const addRule = useAlertsStore((s) => s.addRule);
   const [open, setOpen] = useState(false);
   const [label, setLabel] = useState("");
   const [symbol, setSymbol] = useState("BTC");
   const [condition, setCondition] = useState<AlertCondition>("price_above");
+  const [side, setSide] = useState<AlertSide>("all");
   const [threshold, setThreshold] = useState("");
 
   const handleSubmit = () => {
     const value = parseFloat(threshold);
     if (!label.trim() || isNaN(value) || value <= 0) return;
 
-    addRule({ label: label.trim(), symbol, condition, threshold: value, active: true });
+    addRule({ label: label.trim(), symbol, condition, side, threshold: value, active: true });
     setLabel("");
     setThreshold("");
     setSymbol("BTC");
     setCondition("price_above");
+    setSide("all");
     setOpen(false);
   };
 
@@ -95,6 +103,30 @@ export const AlertForm = () => {
                   )}
                 >
                   {c.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <label className="text-sm font-medium">Side</label>
+            <div className="grid grid-cols-3 gap-2">
+              {SIDES.map((s) => (
+                <button
+                  key={s.value}
+                  onClick={() => setSide(s.value)}
+                  className={cn(
+                    "rounded-md border px-3 py-2 text-sm transition-colors text-center",
+                    side === s.value
+                      ? s.value === "buy"
+                        ? "border-green-500 bg-green-500/10 text-green-500"
+                        : s.value === "sell"
+                        ? "border-red-500 bg-red-500/10 text-red-500"
+                        : "border-primary bg-primary text-primary-foreground"
+                      : "border-border hover:bg-muted"
+                  )}
+                >
+                  {s.label}
                 </button>
               ))}
             </div>

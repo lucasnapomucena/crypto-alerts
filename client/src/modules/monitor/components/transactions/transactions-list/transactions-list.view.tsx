@@ -18,11 +18,15 @@ import { TableVirtuoso } from "react-virtuoso";
 
 interface TransactionsListProps {
   symbol?: string;
+  side?: number;
 }
 
-export const TransactionsList = ({ symbol }: TransactionsListProps) => {
+export const TransactionsList = ({ symbol, side }: TransactionsListProps) => {
   const transactions = useTransactionsStore((state) => state.transactions);
-  const filtered = symbol ? transactions.filter((t) => t.FSYM === symbol) : transactions;
+  let filtered = symbol ? transactions.filter((t) => t.FSYM === symbol) : transactions;
+  if (side !== undefined) {
+    filtered = filtered.filter((t) => t.SIDE === side);
+  }
 
   return (
     <TableVirtuoso
